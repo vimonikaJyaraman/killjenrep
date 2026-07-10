@@ -1,49 +1,61 @@
 pipeline {
+
     agent any
 
     stages {
 
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/yourusername/fullstack-app.git'
+            }
+        }
+
         stage('Build Frontend') {
             steps {
-                echo 'Building Frontend...'
+                sh 'docker build -t frontend ./frontend'
             }
         }
 
         stage('Build Backend') {
             steps {
-                echo 'Building Backend...'
+                sh 'docker build -t backend ./backend'
             }
         }
 
-        stage('Run Tests') {
+        stage('Verify Build') {
             steps {
-                echo 'Running Tests...'
+                sh 'docker images'
             }
         }
 
         stage('Deploy Database') {
             steps {
-                echo 'Deploying Database...'
+                sh 'docker compose up -d database'
             }
         }
 
         stage('Deploy Backend') {
             steps {
-                echo 'Deploying Backend...'
+                sh 'docker compose up -d backend'
             }
         }
 
         stage('Deploy Frontend') {
             steps {
-                echo 'Deploying Frontend...'
+                sh 'docker compose up -d frontend'
             }
         }
     }
 
     post {
+
         success {
-            echo 'Deployment Successful!'
+            echo 'Deployment Successful'
         }
+
+        failure {
+            echo 'Deployment Failed'
+        }
+
     }
 }
-
