@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Debug') {
+            steps {
+                sh '''
+                    whoami
+                    echo "PATH=$PATH"
+                    which docker
+                    docker --version
+                    ls -l /usr/bin/docker
+                '''
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                sh 'docker build -t vimonika/calculator:4.0 .'
+            }
+        }
+    }
+}
